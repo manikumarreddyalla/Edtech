@@ -196,6 +196,28 @@ All routes require a bearer token and derive tenant scope from the verified prin
 
 The storage adapter uses generated opaque keys, validates file signatures against the allow-listed content type, records a SHA-256 checksum and cleans newly written content if the database transaction rolls back. Cross-tenant or unauthorized resource access returns `404 NOT_FOUND`. Production object storage is not configured by this local-only slice and remains a deployment blocker; do not enable the local adapter in production.
 
+## Accreditation evidence APIs — initial workflow
+
+Frameworks and criteria are institution-configurable and versioned by `(name, versionLabel)`; the platform does not assert that a configured checklist is current or guarantees accreditation. All routes derive tenant scope from the verified principal.
+
+| Method and path | Access | Behavior |
+|---|---|---|
+| `GET /api/v1/accreditation/frameworks?page=0&size=20` | Institution admin, IQAC coordinator, faculty | Lists configured framework versions. |
+| `POST /api/v1/accreditation/frameworks` | Institution admin or IQAC coordinator | Creates a framework name and version label. |
+| `GET /api/v1/accreditation/criteria?frameworkId=&page=0&size=20` | Institution admin, IQAC coordinator, faculty | Lists tenant criteria, optionally filtered to a same-tenant framework. |
+| `POST /api/v1/accreditation/criteria` | Institution admin or IQAC coordinator | Adds criterion code/title/category/description to a same-tenant framework version. |
+| `GET /api/v1/accreditation/evidence/owners` | Institution admin or IQAC coordinator | Lists active same-tenant faculty and IQAC users eligible to own an assignment. |
+| `GET /api/v1/accreditation/evidence?academicYear=&status=&departmentId=&page=0&size=20` | Institution admin, IQAC coordinator, faculty | Lists assignments; faculty see only assignments owned by their user ID. |
+| `POST /api/v1/accreditation/evidence` | Institution admin or IQAC coordinator | Assigns a criterion for an academic year, optional same-tenant department, owner and due date. Initial status is `NOT_STARTED`. |
+| `POST /api/v1/accreditation/evidence/{id}/start` | Owner faculty, IQAC coordinator or institution admin | Moves `NOT_STARTED` to `IN_PROGRESS`. |
+| `POST /api/v1/accreditation/evidence/{id}/submissions` | Owner faculty, IQAC coordinator or institution admin | Submits one or more same-tenant, immutable document-version references; submission history is retained. |
+| `GET /api/v1/accreditation/evidence/{id}/submissions?page=0&size=20` | Institution admin, IQAC coordinator, owning faculty | Lists submission and attached-version metadata, not storage keys. |
+| `POST /api/v1/accreditation/evidence/{id}/reviews` | IQAC coordinator | Requires a comment and decision `NEEDS_REVISION` or `VERIFIED`; records a separate review-history row. |
+| `GET /api/v1/accreditation/evidence/{id}/reviews?page=0&size=20` | Institution admin, IQAC coordinator, owning faculty | Lists append-only review decisions and comments for the assignment. |
+| `GET /api/v1/accreditation/reports/missing?academicYear=&departmentId=` | Institution admin or IQAC coordinator | Lists assignments in `NOT_STARTED`, `IN_PROGRESS` or `NEEDS_REVISION`. |
+
+Allowed evidence transitions: `NOT_STARTED → IN_PROGRESS → SUBMITTED`; a review changes `SUBMITTED → NEEDS_REVISION` or `SUBMITTED → VERIFIED`; an owner may submit a new numbered revision from `NEEDS_REVISION`. `VERIFIED` is terminal for that assignment. Cross-tenant IDs are hidden as `404 NOT_FOUND`; every create, submit and review transition is audited. This workflow does not include report PDF/CSV exports or a claim that evidence is regulator-approved.
+
 ## Training API — initial skill catalog
 
 All routes require a bearer access token. The server derives `institutionId` from the verified `institution_id` token claim; clients cannot choose or override the tenant.

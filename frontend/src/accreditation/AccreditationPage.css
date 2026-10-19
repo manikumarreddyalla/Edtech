@@ -1,0 +1,293 @@
+.accreditation-page {
+  display: grid;
+  gap: 22px;
+}
+
+.accreditation-page__header,
+.accreditation-page__list-heading,
+.accreditation-page__item-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.accreditation-page__header {
+  align-items: flex-end;
+}
+
+.accreditation-page__header h1 {
+  margin: 7px 0 8px;
+  font-size: 28px;
+  letter-spacing: -0.04em;
+}
+
+.accreditation-page__header p:last-child,
+.accreditation-page__list-heading p,
+.accreditation-page__item p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.accreditation-page__setup {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  gap: 14px;
+}
+
+.accreditation-page__card,
+.accreditation-page__item,
+.accreditation-page__empty {
+  display: grid;
+  gap: 13px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 10px 30px #21345908;
+}
+
+.accreditation-page__card h2,
+.accreditation-page__list-heading h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.accreditation-page__card label,
+.accreditation-page__action label {
+  display: grid;
+  gap: 7px;
+  color: #36465f;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.accreditation-page__card input,
+.accreditation-page__card select,
+.accreditation-page__action input,
+.accreditation-page__action select {
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid #dce2eb;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+}
+
+.accreditation-page__inline-fields,
+.accreditation-page__action {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: end;
+  gap: 10px;
+}
+
+.accreditation-page__card .primary-button,
+.accreditation-page__action .primary-button {
+  min-height: 40px;
+  padding: 0 14px;
+  font-size: 12px;
+}
+
+.accreditation-page__list-heading {
+  align-items: end;
+}
+
+.accreditation-page__list-heading > span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.accreditation-page__list {
+  display: grid;
+  gap: 12px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.accreditation-page__item {
+  gap: 14px;
+}
+
+.accreditation-page__item-heading {
+  align-items: flex-start;
+}
+
+.accreditation-page__item-heading h3 {
+  margin: 4px 0;
+  font-size: 15px;
+}
+
+.accreditation-page__category {
+  color: var(--blue);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.accreditation-page__status {
+  flex: 0 0 auto;
+  padding: 6px 9px;
+  border-radius: 99px;
+  background: #eef1f6;
+  color: #52627a;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.accreditation-page__status--verified {
+  background: #e6f6ed;
+  color: #247247;
+}
+
+.accreditation-page__status--needs_revision {
+  background: #fff2de;
+  color: #905d12;
+}
+
+.accreditation-page__status--submitted {
+  background: #edf2ff;
+  color: #3150b7;
+}
+
+.accreditation-page__item > button,
+.accreditation-page__history-toggle,
+.accreditation-page__message button {
+  justify-self: start;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.accreditation-page__action {
+  grid-template-columns: minmax(180px, 1.5fr) minmax(90px, 0.5fr) auto;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #fafbfe;
+}
+
+.accreditation-page__action .accreditation-page__comment {
+  grid-column: span 2;
+}
+
+.accreditation-page__history {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  padding-top: 13px;
+  border-top: 1px solid var(--line);
+}
+
+.accreditation-page__history section {
+  display: grid;
+  align-content: start;
+  gap: 9px;
+}
+
+.accreditation-page__history h4 {
+  margin: 0;
+  font-size: 13px;
+}
+
+.accreditation-page__history p,
+.accreditation-page__history article span {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.accreditation-page__history article {
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+  border-radius: 8px;
+  background: #f7f8fc;
+}
+
+.accreditation-page__history article strong {
+  font-size: 11px;
+}
+
+.accreditation-page__message,
+.accreditation-page__empty,
+.accreditation-page__state {
+  padding: 14px;
+  border: 1px solid #f1c9c5;
+  border-radius: 9px;
+  background: #fff8f7;
+  color: #9e2b20;
+  font-size: 13px;
+}
+
+.accreditation-page__message {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.accreditation-page__message--success {
+  border-color: #b9e3cf;
+  background: #f4fbf7;
+  color: #246b45;
+}
+
+.accreditation-page__empty,
+.accreditation-page__state {
+  border-style: dashed;
+  border-color: #d7dfeb;
+  background: #fff;
+  color: var(--muted);
+  text-align: center;
+}
+
+.accreditation-page__empty h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 15px;
+}
+
+.accreditation-page__empty p {
+  margin: 0;
+  font-size: 12px;
+}
+
+@media (max-width: 1000px) {
+  .accreditation-page__setup {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .accreditation-page__setup,
+  .accreditation-page__history {
+    grid-template-columns: 1fr;
+  }
+
+  .accreditation-page__header,
+  .accreditation-page__item-heading {
+    align-items: flex-start;
+  }
+
+  .accreditation-page__action {
+    grid-template-columns: 1fr;
+  }
+
+  .accreditation-page__action .accreditation-page__comment {
+    grid-column: auto;
+  }
+}

@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface DocumentVersionRepository extends JpaRepository<DocumentVersion, UUID> {
+    Optional<DocumentVersion> findByIdAndInstitutionId(UUID id, UUID institutionId);
+
     Page<DocumentVersion> findAllByDocument_IdAndInstitutionId(UUID documentId, UUID institutionId,
                                                                Pageable pageable);
 

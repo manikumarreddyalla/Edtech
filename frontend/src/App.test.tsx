@@ -141,6 +141,53 @@ describe("application authentication shell", () => {
     );
   });
 
+  it("opens the accreditation workspace and loads its institution-scoped data", async () => {
+    const user = userEvent.setup();
+    const fetchMock = vi.fn().mockImplementation((input: RequestInfo | URL) => {
+      const url = String(input);
+      const isLogin = url.endsWith("/api/v1/auth/login");
+      const isOwners = url.endsWith("/api/v1/accreditation/evidence/owners");
+      return Promise.resolve(
+        new Response(
+          JSON.stringify(
+            isLogin
+              ? {
+                  accessToken: "accreditation-test-token",
+                  tokenType: "Bearer",
+                  expiresAt: "2026-10-19T11:30:00Z",
+                  user: {
+                    id: "admin-id",
+                    institutionId: "institution-id",
+                    email: "admin@example.edu",
+                    displayName: "Alex Admin",
+                    roles: ["INSTITUTION_ADMIN"],
+                  },
+                }
+              : isOwners
+                ? []
+                : { content: [], page: 0, size: 100, totalElements: 0, totalPages: 0 },
+          ),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        ),
+      );
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    renderApp();
+    await user.type(screen.getByLabelText(/institution code/i), "DEMO");
+    await user.type(screen.getByLabelText(/email address/i), "admin@example.edu");
+    await user.type(screen.getByLabelText(/^password$/i), "correct-horse-battery");
+    await user.click(screen.getByRole("button", { name: "Sign in" }));
+    await user.click(await screen.findByRole("link", { name: /accreditation/i }));
+
+    expect(await screen.findByRole("heading", { name: "Accreditation evidence" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Framework version" })).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledWith(
+      "http://localhost:8080/api/v1/accreditation/evidence/owners",
+      expect.objectContaining({ headers: expect.any(Headers) }),
+    );
+  });
+
   it("uploads an allowed document as multipart data without overriding its content type", async () => {
     const user = userEvent.setup();
     const fetchMock = vi.fn().mockImplementation(

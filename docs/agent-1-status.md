@@ -1,9 +1,9 @@
 # Agent 1 Status — Platform and Institutional Intelligence Lead
 
 - Owner: agent-1
-- Task: Phase 3 private document management and immutable version history
-- Status: IN_PROGRESS
-- Timestamp: 2026-10-19T12:15:54+05:30
+- Task: Phase 4 configurable accreditation evidence workflow
+- Status: IN_PROGRESS — Phases 0–4 delivered; additional platform capabilities remain
+- Timestamp: 2026-10-19
 
 ## Files created or changed
 - `docs/architecture.md`
@@ -38,6 +38,10 @@
 - `frontend/src/App.tsx`
 - `frontend/src/App.test.tsx`
 - `frontend/src/pages/AppLayout.tsx`
+- `backend/src/main/java/com/collegeops/accreditation/`
+- `backend/src/main/resources/db/migration/V3__accreditation_evidence.sql`
+- `backend/src/test/java/com/collegeops/accreditation/AccreditationIntegrationTest.java`
+- `frontend/src/accreditation/`
 
 ## API or schema changes
 - Published shared Institution, User, Role, Department, AcademicProgram, Student, audit metadata, error, pagination, authentication and tenant-isolation contracts.
@@ -48,12 +52,15 @@
 - Added document upload/search/filter, private download and immutable version-history APIs with V2 metadata, SHA-256 checksums, allow-listed file signatures, size limits and transactional audit/rollback cleanup.
 - Local filesystem storage is restricted to `dev`/`test`; production storage is intentionally not configured.
 - Added a role-aware document library page for upload, search, version history and private downloads using multipart requests and the shared authenticated API client.
-- Directory updates/archiving, faculty profile management, accreditation workflows and reporting APIs are not implemented yet.
+- Added institution-configurable framework and criterion APIs, eligible-owner lookup, evidence assignment and status transitions, immutable numbered submissions referencing document versions, IQAC reviews with retained history, missing-evidence reporting and transactional audit events.
+- Added the accreditation workbench route for framework/criterion setup, owner assignment, evidence start/submission, review and history.
+- Directory updates/archiving, faculty profile management, accreditation completeness dashboards and report exports remain unimplemented.
 
 ## Tests executed
 - `mvn -q clean -Dtest=AuthIntegrationTest,InstitutionDirectoryIntegrationTest,DocumentManagementIntegrationTest test`: passed (10 tests).
-- `mvn clean test`: 13/14 tests pass; one Agent 2-owned `TrainingSkillServiceTest` fixture assertion fails.
-- `npm test`: passed (6 tests).
+- `mvn clean -Dtest=AuthIntegrationTest,InstitutionDirectoryIntegrationTest,DocumentManagementIntegrationTest,AccreditationIntegrationTest test`: passed (13 tests); clean runs applied V1–V3 and exercised the evidence lifecycle against PostgreSQL-mode H2.
+- `mvn clean test`: 16/17 tests pass; one Agent 2-owned `TrainingSkillServiceTest` fixture assertion fails at line 63.
+- `npm test`: passed (7 tests).
 - `npm run typecheck`: passed.
 - `npm run build`: passed.
 - `npm audit --audit-level=moderate`: passed, 0 vulnerabilities.
@@ -78,4 +85,4 @@
 - Agent 2 owns the training module, V100+ migration range, training components and training tests. Do not edit those files.
 
 ## Exact next action
-- Implement versioned accreditation frameworks/criteria and a tenant-isolated evidence submission/review workflow using V3–V99, then publish the next phase checkpoint.
+- Implement and validate the next shared platform slice (directory lifecycle, production object storage, or institution intelligence dashboards) after coordinating scope with Agent 2; production storage and report exports are not implied by this accreditation workflow.

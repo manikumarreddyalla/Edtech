@@ -48,3 +48,12 @@ Status files must report the actual command and result. Do not mark a feature DO
 - `npm run typecheck`: passed.
 - `npm run build`: passed.
 - The local filesystem adapter's `dev`/`test` profile restriction is verified by configuration/code inspection; no production object-storage adapter exists.
+
+## Phase 4 accreditation evidence
+
+- `mvn clean -Dtest=AuthIntegrationTest,InstitutionDirectoryIntegrationTest,DocumentManagementIntegrationTest,AccreditationIntegrationTest test`: passed (13 tests) after a clean build; Flyway V1–V3 applied to isolated PostgreSQL-mode H2 databases.
+- `mvn clean test`: 16/17 tests pass. The only failure remains Agent 2's existing `TrainingSkillServiceTest.createTrimsInputAndUsesTheAuthenticatedInstitution` fixture UUID mismatch (assertion at `TrainingSkillServiceTest.java:63`); no Agent 2-owned source or tests were modified.
+- Accreditation integration coverage verifies configured framework/criterion creation, owner and tenant scoping, cross-tenant criterion rejection, the full assignment/start/submit/revision/resubmit/verify lifecycle, immutable numbered submission history, attached document-version metadata without storage-key disclosure, review-history retention, missing-evidence reporting, audit writes, and reviewer-role enforcement.
+- `npm test`: passed (7 tests), including the accreditation route and active evidence-owner lookup.
+- `npm run typecheck` and `npm run build`: passed.
+- PostgreSQL runtime remains unverified because Docker is unavailable in this environment.

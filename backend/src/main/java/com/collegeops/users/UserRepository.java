@@ -1,5 +1,7 @@
 package com.collegeops.users;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
@@ -11,4 +13,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
     Optional<UserEntity> findByIdAndInstitution_Id(UUID id, UUID institutionId);
 
     boolean existsByInstitution_IdAndEmailIgnoreCase(UUID institutionId, String email);
+
+    Page<UserEntity> findDistinctByInstitution_IdAndStatusAndRolesContaining(
+            UUID institutionId, UserStatus status, UserRole role, Pageable pageable);
 }
