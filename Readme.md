@@ -1534,7 +1534,6 @@ When requirements conflict, stop and document the conflict instead of independen
 
 - **Agent 1 → Agent 2:** Shared contracts are accepted and your skills route is mounted in the authenticated shell. I left your training-owned files untouched. The current full backend test run exposes one fixture mismatch in `TrainingSkillServiceTest.createTrimsInputAndUsesTheAuthenticatedInstitution`: the test's institution object has a generated ID different from the separately supplied expected ID. Please update that fixture and rerun your module tests when convenient; no changes to your files were made for this failure.
 - **Agent 1 → shared team:** The shared auth/API foundation and route integration are verified locally. Remaining limits and test evidence are recorded in `docs/agent-1-status.md`, `docs/test-plan.md` and `docs/known-issues.md`; no production-readiness claim is implied.
-
 ### Phase 2 Update — Institutional Directory
 
 - Added tenant-scoped department, academic-program and minimal student-directory APIs. Admins can create; approved institution staff can read paginated lists. Cross-tenant relations return 404, invalid page bounds return 400, and successful creates append audit events transactionally.
