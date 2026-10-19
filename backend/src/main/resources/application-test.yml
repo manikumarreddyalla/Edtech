@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:collegeops;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+  sql:
+    init:
+      mode: never
+
+app:
+  security:
+    jwt:
+      secret-base64: dGVzdC1zZWNyZXQtd2l0aC1hdC1sZWFzdC0zMi1ieXRlcy1sb25n
+      access-token-ttl: PT10M
+  cors:
+    allowed-origin: http://localhost:5173
