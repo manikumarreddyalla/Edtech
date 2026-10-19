@@ -1,0 +1,51 @@
+# Database Design
+
+## Status
+
+Phase 0 logical design. Physical schema and migrations are not implemented yet. Update this document alongside migration changes.
+
+## Shared schema rules
+
+- PostgreSQL is the shared persistence store for the modular monolith.
+- Use UUID primary keys and UTC `timestamptz` timestamps.
+- Use Flyway SQL migrations; use monotonically ordered names such as `V1__shared_identity.sql`.
+- Never rewrite a migration that may have been applied. Add a new migration and coordinate migration numbering with Agent 2 before adding migrations in parallel.
+- Use explicit foreign keys, indexes and uniqueness constraints. Add `institution_id` to tenant-owned tables or enforce tenant scope through a parent relation and composite constraints.
+- Avoid cascade deletion for audit-relevant records. Define archival and retention behavior before adding destructive operations.
+- Store uploaded file bytes outside PostgreSQL; retain only metadata and an opaque storage key.
+
+## Shared entities
+
+| Table | Key fields and constraints |
+|---|---|
+| `institutions` | `id`, `name`, unique `code`, `status`, timestamps |
+| `users` | `id`, `institution_id`, normalized unique `(institution_id, email)`, `display_name`, password hash, `status`, timestamps |
+| `user_roles` | `user_id`, role enum/string; unique `(user_id, role)` |
+| `departments` | `id`, `institution_id`, `name`, unique `(institution_id, code)`, `status`, timestamps |
+| `academic_programs` | `id`, `institution_id`, `department_id`, `name`, unique `(institution_id, code)`, `status`, timestamps |
+| `students` | `id`, `institution_id`, optional unique `user_id`, `department_id`, `academic_program_id`, unique `(institution_id, student_number)`, `status`, timestamps |
+| `faculty_profiles` | `id`, `institution_id`, `user_id`, optional `department_id`, timestamps |
+| `audit_events` | `id`, `institution_id`, `actor_user_id`, action, target type/id, timestamp, safe summary |
+
+Role values initially follow `docs/architecture.md`. A user, department, program or profile must not be associated with a different institution through a foreign key. Where ordinary foreign keys cannot enforce same-tenant ownership, validate it in the service and add a database constraint/association design that prevents inconsistent joins.
+
+## Module ownership
+
+- Agent 1 owns the tables above plus records, documents and accreditation tables.
+- Agent 2 owns training pathway, skill, cohort, enrollment, assignment, assessment and result tables.
+- Agent 2's tables must reference shared `institutions`, `users` and `students` IDs and include institution scoping directly or through a verifiable parent.
+- Cross-module tables and migration ordering are shared concerns and require coordination before modification.
+
+## Documents and audit
+
+Document metadata should include institution, uploader, original filename (sanitized for display), content type, byte size, checksum, opaque storage key, created time and lifecycle status. Enforce file size/type limits before persistence. Do not store private storage URLs as durable identifiers.
+
+Audit rows should be append-only for sensitive actions. Include no credentials, bearer tokens, raw file content or unnecessary student data in event summaries.
+
+## Migration sequence proposal
+
+1. `V1`: institutions, users/roles, departments, academic programs, students/faculty, audit events.
+2. `V2+`: Agent 1 records/documents/accreditation schema.
+3. Agent 2 adds its migrations only after confirming the shared `V1` model and migration naming/merge order.
+
+If both modules need to create migrations concurrently, reserve non-overlapping migration ranges or integrate migrations serially before merging; never ship duplicate Flyway version numbers.
