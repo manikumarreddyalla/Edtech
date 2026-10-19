@@ -1,0 +1,210 @@
+.training-skills {
+  display: grid;
+  gap: 24px;
+}
+
+.training-skills__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.training-skills__header h1 {
+  margin: 7px 0 8px;
+  font-size: 28px;
+  letter-spacing: -0.04em;
+}
+
+.training-skills__intro,
+.training-skills__form-heading p,
+.training-skills__item p,
+.training-skills__empty p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.training-skills__form {
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: #fff;
+  box-shadow: 0 10px 30px #21345908;
+}
+
+.training-skills__form-heading h2,
+.training-skills__list-heading h2 {
+  margin: 0 0 5px;
+  font-size: 16px;
+  letter-spacing: -0.02em;
+}
+
+.training-skills__fields {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.8fr) minmax(220px, 1.4fr) auto;
+  align-items: end;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.training-skills__fields label {
+  display: grid;
+  gap: 7px;
+  color: #36465f;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.training-skills__fields input {
+  width: 100%;
+  min-height: 43px;
+  padding: 0 11px;
+  border: 1px solid #dce2eb;
+  border-radius: 8px;
+  color: var(--ink);
+}
+
+.training-skills__fields input:focus {
+  border-color: var(--blue);
+  outline: 3px solid #315cf41a;
+}
+
+.training-skills__fields .primary-button {
+  min-width: 118px;
+  min-height: 43px;
+  margin: 0;
+  padding: 0 14px;
+}
+
+.training-skills__optional {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.training-skills__list-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.training-skills__list-heading > span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.training-skills__list {
+  display: grid;
+  gap: 10px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.training-skills__item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 15px 17px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: #fff;
+}
+
+.training-skills__badge,
+.training-skills__empty-mark {
+  display: grid;
+  width: 39px;
+  height: 39px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 11px;
+  background: #edf2ff;
+  color: var(--blue);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.training-skills__item h3 {
+  margin: 0 0 4px;
+  font-size: 13px;
+}
+
+.training-skills__item p {
+  font-size: 12px;
+}
+
+.training-skills__state,
+.training-skills__empty {
+  padding: 30px;
+  border: 1px dashed #d7dfeb;
+  border-radius: 12px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.training-skills__empty-mark {
+  margin: 0 auto 12px;
+  font-size: 20px;
+}
+
+.training-skills__empty h2 {
+  margin: 0 0 7px;
+  color: var(--ink);
+  font-size: 15px;
+}
+
+.training-skills__error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid #f1c9c5;
+  border-radius: 9px;
+  background: #fff8f7;
+  color: #9e2b20;
+  font-size: 13px;
+}
+
+.training-skills__error button {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.training-skills__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.training-skills__pagination button {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+  color: var(--ink);
+}
+
+.training-skills__pagination button:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+@media (max-width: 760px) {
+  .training-skills__fields {
+    grid-template-columns: 1fr;
+  }
+
+  .training-skills__fields .primary-button {
+    width: 100%;
+  }
+}

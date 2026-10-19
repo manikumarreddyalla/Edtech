@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
@@ -29,7 +28,6 @@ public class DevelopmentBootstrap {
         return args -> createBootstrapUser(institutionRepository, userRepository, passwordEncoder, email, password);
     }
 
-    @Transactional
     void createBootstrapUser(InstitutionRepository institutionRepository, UserRepository userRepository,
                              PasswordEncoder passwordEncoder, String email, String password) {
         Institution institution = institutionRepository.findByCodeIgnoreCase("DEMO")

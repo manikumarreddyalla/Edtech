@@ -135,6 +135,20 @@ All API errors use this shape:
 
 ## Endpoint families and initial authorization
 
+### Login
+
+`POST /api/v1/auth/login` is public and accepts an institution code because email addresses are unique within an institution rather than globally:
+
+```json
+{
+  "institutionCode": "DEMO",
+  "email": "admin@example.edu",
+  "password": "user-supplied-password"
+}
+```
+
+On success it returns `accessToken`, `tokenType` (`Bearer`), `expiresAt` and the safe `user` profile shown above. The access token expires after 10 minutes. The initial implementation keeps the token in frontend memory; reloading the page requires signing in again. `GET /api/v1/auth/me` requires a valid bearer token and returns the current user profile. Credentials are never echoed in responses.
+
 | Family | Initial access rule |
 |---|---|
 | `/auth/**` | Public login; authenticated identity/logout actions as applicable |
@@ -150,3 +164,14 @@ Every endpoint must document its final role rule in OpenAPI. These family rules 
 ## Agent 2 integration requirement
 
 Training endpoints should use the same user, student and institution IDs, standard errors, pagination and tenant resolution. Agent 2 must not create parallel login, institution, student or audit models. Training API additions belong in the training section of OpenAPI and must state role and institution scope.
+
+## Training API — initial skill catalog
+
+All routes require a bearer access token. The server derives `institutionId` from the verified `institution_id` token claim; clients cannot choose or override the tenant.
+
+| Method and path | Access | Behavior |
+|---|---|---|
+| `GET /api/v1/training/skills?page=0&size=20` | Authenticated institution member | Lists only skills belonging to the caller's institution, ordered by name. `size` is limited to 100. |
+| `POST /api/v1/training/skills` | `TRAINER` or `PLACEMENT_OFFICER` | Creates a skill in the caller's institution. `name` is required (1–120 characters); `description` is optional (up to 1000 characters). |
+
+The collection response uses the shared pagination shape. Skill responses include `id`, `institutionId`, `name`, `description`, `createdAt` and `updatedAt`. Duplicate names within one institution return `409 CONFLICT`; the same skill name may be used by another institution. No update or deletion operation is exposed in this initial slice.

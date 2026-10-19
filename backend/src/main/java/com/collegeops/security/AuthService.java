@@ -5,13 +5,14 @@ import com.collegeops.institution.InstitutionRepository;
 import com.collegeops.institution.InstitutionStatus;
 import com.collegeops.users.UserEntity;
 import com.collegeops.users.UserRepository;
-import com.collegeops.users.UserRole;
 import com.collegeops.users.UserStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.jwt.JwsHeader;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,7 +66,8 @@ public class AuthService {
                 .claim("institution_id", institution.getId().toString())
                 .claim("roles", roles)
                 .build();
-        String token = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+        JwsHeader headers = JwsHeader.with(MacAlgorithm.HS256).build();
+        String token = jwtEncoder.encode(JwtEncoderParameters.from(headers, claims)).getTokenValue();
 
         AuthUserResponse responseUser = new AuthUserResponse(user.getId(), institution.getId(), user.getEmail(),
                 user.getDisplayName(), roles);

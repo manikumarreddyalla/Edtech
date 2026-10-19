@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -17,6 +17,7 @@ function renderApp(initialEntry = "/login") {
 
 describe("application authentication shell", () => {
   afterEach(() => {
+    cleanup();
     vi.unstubAllGlobals();
   });
 
