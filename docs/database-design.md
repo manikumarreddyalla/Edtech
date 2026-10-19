@@ -2,7 +2,7 @@
 
 ## Status
 
-Phase 0 logical design. Physical schema and migrations are not implemented yet. Update this document alongside migration changes.
+Shared logical design and current schema status, updated by Agent 1 on 2026-10-19.
 
 ## Shared schema rules
 
@@ -14,7 +14,7 @@ Phase 0 logical design. Physical schema and migrations are not implemented yet. 
 - Avoid cascade deletion for audit-relevant records. Define archival and retention behavior before adding destructive operations.
 - Store uploaded file bytes outside PostgreSQL; retain only metadata and an opaque storage key.
 
-## Shared entities
+## Shared entities implemented by V1
 
 | Table | Key fields and constraints |
 |---|---|
@@ -42,10 +42,10 @@ Document metadata should include institution, uploader, original filename (sanit
 
 Audit rows should be append-only for sensitive actions. Include no credentials, bearer tokens, raw file content or unnecessary student data in event summaries.
 
-## Migration sequence proposal
+## Migration sequence
 
 1. `V1`: institutions, users/roles, departments, academic programs, students/faculty, audit events.
-2. `V2+`: Agent 1 records/documents/accreditation schema.
-3. Agent 2 adds its migrations only after confirming the shared `V1` model and migration naming/merge order.
+2. `V2`–`V99`: reserved for Agent 1 records/documents/accreditation schema.
+3. `V100+`: Agent 2 training schema, as recorded in `docs/agent-2-status.md`.
 
-If both modules need to create migrations concurrently, reserve non-overlapping migration ranges or integrate migrations serially before merging; never ship duplicate Flyway version numbers.
+Never rewrite an applied migration or ship duplicate Flyway versions. Agent 2's current training skill migration is `V100__training_skill_catalog.sql`; verify only one copy of each migration remains under `target/classes` after a clean build.

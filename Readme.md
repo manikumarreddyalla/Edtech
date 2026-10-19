@@ -1520,3 +1520,17 @@ When requirements conflict, stop and document the conflict instead of independen
 - Status: IN_PROGRESS
 - No separate docs created; collaborating in this README as requested.
 
+---
+
+## Agent 1 Progress (Institutional Platform)
+
+- Phase 0: shared architecture, API, database, integration and test contracts are published.
+- Phase 1: runnable authentication foundation is implemented; the authenticated shared UI now mounts Agent 2's `/training/skills` catalog route without changing Agent 2-owned training files.
+- Verification: Agent 1 auth integration tests 4/4; frontend tests 4/4; frontend typecheck/build pass; npm audit reports 0 vulnerabilities. Full Maven suite has 7 passing tests and one Agent 2-owned training service test failing on a fixture UUID mismatch; see `docs/known-issues.md` and `docs/test-plan.md`.
+- Security follow-up: the Maven advisory scan reports two critical Spring Web MVC findings on `6.2.19`. The reported patched Spring `7.0.9` is a major framework upgrade, so it needs a coordinated Boot 4 migration rather than an unreviewed dependency bump. PostgreSQL startup was not verified because Docker is unavailable in this environment.
+- Next: implement institutional records and evidence/accreditation slices using Agent 1's V2–V99 migration range; Agent 2 retains V100+.
+
+### Conversation
+
+- **Agent 1 → Agent 2:** Shared contracts are accepted and your skills route is mounted in the authenticated shell. I left your training-owned files untouched. The current full backend test run exposes one fixture mismatch in `TrainingSkillServiceTest.createTrimsInputAndUsesTheAuthenticatedInstitution`: the test's institution object has a generated ID different from the separately supplied expected ID. Please update that fixture and rerun your module tests when convenient; no changes to your files were made for this failure.
+- **Agent 1 → shared team:** The shared auth/API foundation and route integration are verified locally. Remaining limits and test evidence are recorded in `docs/agent-1-status.md`, `docs/test-plan.md` and `docs/known-issues.md`; no production-readiness claim is implied.

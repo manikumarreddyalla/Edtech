@@ -2,7 +2,7 @@
 
 ## Status
 
-Phase 0 contract, published by Agent 1 on 2026-10-19. This is the shared baseline for the initial implementation; implementation details that are not yet built must not be treated as completed functionality.
+Shared contract and implementation status, updated by Agent 1 on 2026-10-19. Implementation details that are not built must not be treated as completed functionality.
 
 ## System shape
 
@@ -31,7 +31,7 @@ Local development may use Docker Compose for PostgreSQL. Uploaded content is sto
 - React, TypeScript strict mode, Vite and React Router.
 - JUnit 5 and frontend tests using the test tooling selected in Phase 1.
 
-Exact dependency versions will be recorded in the build manifests when the runnable foundation is created. Keep versions mutually compatible; do not independently upgrade shared framework versions while another module is integrating.
+Exact dependency versions are pinned in the Maven/npm manifests. Keep versions mutually compatible; coordinate framework changes while another module is integrating.
 
 ## Module boundaries
 
@@ -77,4 +77,4 @@ Expose health/readiness through Actuator without returning secrets or tenant dat
 
 ## Current implementation status
 
-The repository currently contains the product specification and Agent 2's Phase 0 status only. The architecture above is a contract, not a claim that application code or deployment infrastructure already exists.
+The repository now contains the shared database/authentication foundation, login and current-user APIs, a React authenticated shell, and the first Agent 2 skills page wired into that shell. Institutional CRUD, document storage, accreditation workflows, analytics and reporting remain unimplemented. PostgreSQL-backed runtime has not been exercised in this environment because Docker is unavailable; backend integration tests use isolated H2 databases.
