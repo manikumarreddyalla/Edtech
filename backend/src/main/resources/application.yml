@@ -3,6 +3,10 @@ spring:
     name: collegeops-api
   profiles:
     default: dev
+  servlet:
+    multipart:
+      max-file-size: ${MAX_DOCUMENT_SIZE:10MB}
+      max-request-size: ${MAX_DOCUMENT_REQUEST_SIZE:11MB}
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/collegeops}
     username: ${DATABASE_USERNAME:collegeops}
@@ -48,3 +52,6 @@ app:
     admin:
       email: ${BOOTSTRAP_ADMIN_EMAIL:}
       password: ${BOOTSTRAP_ADMIN_PASSWORD:}
+  documents:
+    storage-root: ${DOCUMENT_STORAGE_ROOT:./.data/documents}
+    max-file-bytes: ${MAX_DOCUMENT_BYTES:10485760}

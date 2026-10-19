@@ -25,6 +25,19 @@ export function AppLayout() {
             <span aria-hidden="true">◈</span>
             Overview
           </NavLink>
+          {user?.roles.some((role) =>
+            ["INSTITUTION_ADMIN", "IQAC_COORDINATOR", "FACULTY"].includes(role),
+          ) && (
+            <NavLink
+              className={({ isActive }) =>
+                `nav-item${isActive ? " nav-item-active" : ""}`
+              }
+              to="/documents"
+            >
+              <span aria-hidden="true">▤</span>
+              Documents
+            </NavLink>
+          )}
           <NavLink
             className={({ isActive }) =>
               `nav-item${isActive ? " nav-item-active" : ""}`

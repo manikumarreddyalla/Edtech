@@ -38,7 +38,7 @@ Role values initially follow `docs/architecture.md`. A user, department, program
 
 ## Documents and audit
 
-Document metadata should include institution, uploader, original filename (sanitized for display), content type, byte size, checksum, opaque storage key, created time and lifecycle status. Enforce file size/type limits before persistence. Do not store private storage URLs as durable identifiers.
+V2 adds `documents` and `document_versions`. Documents carry institution, owner, optional department, title, category and lifecycle status. Immutable version rows carry tenant/document/uploader IDs, version number, sanitized original filename, allow-listed content type, byte size, SHA-256 checksum, opaque storage key and upload time. Composite tenant foreign keys prevent documents or versions from referencing another institution's user/department/document. The local storage adapter is dev/test-only; production must supply a private object-storage implementation.
 
 Audit rows should be append-only for sensitive actions. Include no credentials, bearer tokens, raw file content or unnecessary student data in event summaries.
 
@@ -50,3 +50,4 @@ Audit rows should be append-only for sensitive actions. Include no credentials, 
 
 Never rewrite an applied migration or ship duplicate Flyway versions. Agent 2's current training skill migration is `V100__training_skill_catalog.sql`; verify only one copy of each migration remains under `target/classes` after a clean build.
 The initial directory API uses the `departments`, `academic_programs` and `students` tables already created in shared V1; no schema migration was needed for this read/create slice. `audit_events` is mapped by the shared append-only `AuditEvent` entity and records each successful directory create in the same transaction.
+The initial document management API uses V2. Document bytes remain outside PostgreSQL; DB transactions record metadata and audit events, and clean up a newly stored local file if the transaction rolls back.

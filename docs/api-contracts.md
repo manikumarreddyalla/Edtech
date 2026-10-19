@@ -119,6 +119,8 @@ All API errors use this shape:
 | `403` | Authenticated but not permitted |
 | `404` | Resource absent or outside the caller's tenant scope |
 | `409` | Uniqueness or state-transition conflict |
+| `413` | Uploaded file or request exceeds its configured size limit |
+| `415` | Unsupported request content type |
 | `500` | Unexpected server error; response contains no internal details |
 
 ## Pagination response
@@ -179,6 +181,20 @@ All routes require a bearer access token. The API derives `institutionId` from t
 | `POST /api/v1/students` | Institution admin | Creates a student with `studentNumber`, `departmentId` and `academicProgramId`; optional `userId` must refer to a same-institution user with the `STUDENT` role. Department and program must both belong to the caller's institution and program department must match. |
 
 Department/program/student responses include their IDs, institution ID, related IDs/names where useful, status and server-managed `createdAt`/`updatedAt`. Student directory responses do not expose email, password, address, date of birth or other unnecessary personal data. A cross-tenant or missing related resource returns `404 NOT_FOUND`; duplicate codes/numbers return `409 CONFLICT`. This initial slice has no update, delete or status-transition operation.
+
+## Document management APIs — initial slice
+
+All routes require a bearer token and derive tenant scope from the verified principal. Local development uses a private filesystem storage adapter; no unauthenticated or public storage URL is returned. The initial supported uploads are PDF, JPEG, PNG and valid UTF-8 plain text, up to 10 MiB.
+
+| Method and path | Access | Behavior |
+|---|---|---|
+| `POST /api/v1/documents` | Institution admin, IQAC coordinator or faculty | Multipart fields: `title`, `category`, optional `departmentId`, and `file`. Creates a logical document and immutable version 1. |
+| `GET /api/v1/documents?page=0&size=20&q=&category=&departmentId=` | Institution admin, IQAC coordinator or faculty | Lists only the tenant's documents; faculty results are restricted to documents they own. Supports title search and category/department filters. |
+| `POST /api/v1/documents/{documentId}/versions` | Institution admin, IQAC coordinator, or owning faculty | Adds an immutable version to an existing document. |
+| `GET /api/v1/documents/{documentId}/versions` | Institution admin, IQAC coordinator, or owning faculty | Lists safe metadata for version history; never returns storage keys. |
+| `GET /api/v1/documents/{documentId}/versions/{versionNumber}/content` | Institution admin, IQAC coordinator, or owning faculty | Streams private content only after tenant and ownership authorization. |
+
+The storage adapter uses generated opaque keys, validates file signatures against the allow-listed content type, records a SHA-256 checksum and cleans newly written content if the database transaction rolls back. Cross-tenant or unauthorized resource access returns `404 NOT_FOUND`. Production object storage is not configured by this local-only slice and remains a deployment blocker; do not enable the local adapter in production.
 
 ## Training API — initial skill catalog
 

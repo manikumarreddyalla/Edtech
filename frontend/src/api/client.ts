@@ -25,7 +25,7 @@ export async function apiRequest<T>(
 ): Promise<T> {
   const headers = new Headers(options.headers);
   headers.set("Accept", "application/json");
-  if (options.body !== undefined) {
+  if (options.body !== undefined && !(options.body instanceof FormData)) {
     headers.set("Content-Type", "application/json");
   }
   if (accessToken) {
@@ -48,4 +48,31 @@ export async function apiRequest<T>(
     return undefined as T;
   }
   return (await response.json()) as T;
+}
+
+export async function apiDownload(
+  path: string,
+  accessToken: string,
+): Promise<{ blob: Blob; filename: string }> {
+  const headers = new Headers({ Accept: "application/octet-stream" });
+  headers.set("Authorization", `Bearer ${accessToken}`);
+  const response = await fetch(`${apiBaseUrl}${path}`, { headers });
+  if (!response.ok) {
+    const body = (await response.json().catch(() => undefined)) as
+      | ApiErrorBody
+      | undefined;
+    throw new ApiError(
+      body?.message ?? "The download could not be completed.",
+      response.status,
+      body,
+    );
+  }
+
+  const disposition = response.headers.get("Content-Disposition") ?? "";
+  const encodedFilename = disposition.match(/filename\*=UTF-8''([^;]+)/i)?.[1];
+  const quotedFilename = disposition.match(/filename="([^"]+)"/i)?.[1];
+  const filename = encodedFilename
+    ? decodeURIComponent(encodedFilename)
+    : quotedFilename ?? "download";
+  return { blob: await response.blob(), filename };
 }

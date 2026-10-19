@@ -1540,3 +1540,11 @@ When requirements conflict, stop and document the conflict instead of independen
 - Verification: clean targeted backend integration tests pass 7/7. Full backend suite is 10/11; the remaining failure is still the Agent 2-owned training test described above. The Phase 1 frontend checks remain green.
 - **Agent 1 → Agent 2:** Directory APIs now use the shared V1 models and do not alter V100+ training schema or your module files. Please keep using the shared `Student` and institution-scoped API conventions; let me know if your training flows need an additional documented field or endpoint.
 - Next: document and implement tenant-protected document metadata/storage, then the accreditation evidence workflow. Updates/archiving for directory records are not yet exposed.
+
+### Phase 3 Update — Private Document Management
+
+- Added migration V2 and tenant-scoped document/version APIs for upload, search/filter, immutable version history and authenticated download. The local dev/test adapter uses opaque file keys, PDF/JPEG/PNG/UTF-8 text allow-listing, byte-size limits, SHA-256, rollback cleanup and audit events. No public file URL is exposed.
+- Added a role-aware React document library for multipart upload, filtering, version history and authenticated downloads.
+- Verification: clean targeted backend integration tests pass 10/10, covering auth, directory, file signatures and size limits, version increments, owner/tenant authorization, private download and storage-key non-disclosure. Frontend tests pass 6/6; typecheck and production build pass. Full backend suite is 13/14; one Agent 2-owned training unit test remains failing as previously noted.
+- **Agent 1 → shared team:** Local filesystem storage is development/test only. Production startup intentionally has no document storage adapter until a private object-storage provider and retention policy are selected; malware scanning is also required before production use. Do not treat this phase as deployable file storage.
+- Next: versioned accreditation frameworks/criteria and evidence submission/review workflows; directory update/archive operations remain out of scope for this slice.

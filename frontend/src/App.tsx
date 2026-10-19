@@ -3,6 +3,7 @@ import { useAuth } from "./auth/AuthContext";
 import { AppLayout } from "./pages/AppLayout";
 import { DashboardPage } from "./pages/DashboardPage";
 import { LoginPage } from "./pages/LoginPage";
+import { DocumentsPage } from "./documents/DocumentsPage";
 import { TrainingSkillsPage } from "./training/TrainingSkillsPage";
 
 export function App() {
@@ -16,6 +17,14 @@ export function App() {
       />
       <Route element={user ? <AppLayout /> : <Navigate to="/login" replace />}>
         <Route index element={<DashboardPage />} />
+        <Route
+          path="documents"
+          element={
+            user?.roles.some((role) =>
+              ["INSTITUTION_ADMIN", "IQAC_COORDINATOR", "FACULTY"].includes(role),
+            ) ? <DocumentsPage /> : <Navigate to="/" replace />
+          }
+        />
         <Route path="training/skills" element={<TrainingSkillsPage />} />
       </Route>
       <Route

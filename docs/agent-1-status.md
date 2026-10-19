@@ -1,9 +1,9 @@
 # Agent 1 Status — Platform and Institutional Intelligence Lead
 
 - Owner: agent-1
-- Task: Phase 2 institutional directory API slice
+- Task: Phase 3 private document management and immutable version history
 - Status: IN_PROGRESS
-- Timestamp: 2026-10-19T12:06:00+05:30
+- Timestamp: 2026-10-19T12:15:54+05:30
 
 ## Files created or changed
 - `docs/architecture.md`
@@ -27,6 +27,17 @@
 - `backend/src/main/java/com/collegeops/institution/`
 - `backend/src/main/java/com/collegeops/common/`
 - `backend/src/test/java/com/collegeops/institution/InstitutionDirectoryIntegrationTest.java`
+- `backend/src/main/java/com/collegeops/documents/`
+- `backend/src/test/java/com/collegeops/documents/DocumentManagementIntegrationTest.java`
+- `backend/src/main/resources/db/migration/V2__documents.sql`
+- `backend/src/main/resources/application.yml`
+- `.env.example`
+- `.gitignore`
+- `frontend/src/documents/`
+- `frontend/src/api/client.test.ts`
+- `frontend/src/App.tsx`
+- `frontend/src/App.test.tsx`
+- `frontend/src/pages/AppLayout.tsx`
 
 ## API or schema changes
 - Published shared Institution, User, Role, Department, AcademicProgram, Student, audit metadata, error, pagination, authentication and tenant-isolation contracts.
@@ -34,12 +45,15 @@
 - Added the React login/dashboard shell and mounted Agent 2's `/training/skills` page using the shared router/auth/API client.
 - Added tenant-scoped, paginated read and administrator-create routes for departments, academic programs and minimal student directory entries.
 - Directory creation writes an audit event in the same transaction; linked student users must be active, same-tenant users with the `STUDENT` role.
-- Updates/archiving, faculty profile management, document upload/storage, accreditation workflows and reporting APIs are not implemented yet.
+- Added document upload/search/filter, private download and immutable version-history APIs with V2 metadata, SHA-256 checksums, allow-listed file signatures, size limits and transactional audit/rollback cleanup.
+- Local filesystem storage is restricted to `dev`/`test`; production storage is intentionally not configured.
+- Added a role-aware document library page for upload, search, version history and private downloads using multipart requests and the shared authenticated API client.
+- Directory updates/archiving, faculty profile management, accreditation workflows and reporting APIs are not implemented yet.
 
 ## Tests executed
-- `mvn -q clean -Dtest=AuthIntegrationTest,InstitutionDirectoryIntegrationTest test`: passed (7 tests).
-- `mvn clean test`: 10/11 tests pass; one Agent 2-owned `TrainingSkillServiceTest` fixture assertion fails.
-- `npm test`: passed (4 tests).
+- `mvn -q clean -Dtest=AuthIntegrationTest,InstitutionDirectoryIntegrationTest,DocumentManagementIntegrationTest test`: passed (10 tests).
+- `mvn clean test`: 13/14 tests pass; one Agent 2-owned `TrainingSkillServiceTest` fixture assertion fails.
+- `npm test`: passed (6 tests).
 - `npm run typecheck`: passed.
 - `npm run build`: passed.
 - `npm audit --audit-level=moderate`: passed, 0 vulnerabilities.
@@ -56,11 +70,12 @@
 ## Outstanding issues
 - Agent 2's training service unit test has a fixture mismatch and currently fails the full Maven suite; Agent 2 owns that test.
 - Two Spring Web MVC critical advisories require a major Spring 7 / Boot 4 upgrade, tracked as a follow-up.
-- Production token lifecycle and private object storage/retention remain open; see `docs/known-issues.md`.
+- Production token lifecycle and private object storage/retention remain open; the production profile has no storage adapter until one is selected and implemented. See `docs/known-issues.md`.
+- Production document malware scanning/content disarm is not configured; see `KI-007`.
 
 ## Dependencies for the other agent
 - Agent 2 has accepted shared contracts and its skills page is mounted in the shared shell.
 - Agent 2 owns the training module, V100+ migration range, training components and training tests. Do not edit those files.
 
 ## Exact next action
-- Implement document storage/metadata and the first accreditation evidence workflow with tenant-isolation tests; use V2–V99 and publish the next phase checkpoint.
+- Implement versioned accreditation frameworks/criteria and a tenant-isolated evidence submission/review workflow using V3–V99, then publish the next phase checkpoint.

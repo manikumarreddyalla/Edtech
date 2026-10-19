@@ -15,6 +15,11 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -62,6 +67,25 @@ public class ApiErrorHandlers implements AuthenticationEntryPoint, AccessDeniedH
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public void handleMalformedRequest(HttpServletResponse response) throws IOException {
         writeError(response, HttpStatus.BAD_REQUEST, "VALIDATION_ERROR", "The request body is malformed.");
+    }
+
+    @ExceptionHandler({MissingServletRequestParameterException.class, MissingServletRequestPartException.class,
+            MethodArgumentTypeMismatchException.class})
+    public void handleMissingOrInvalidParameter(HttpServletResponse response) throws IOException {
+        writeError(response, HttpStatus.BAD_REQUEST, "VALIDATION_ERROR",
+                "One or more request parameters are missing or invalid.");
+    }
+
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public void handleUnsupportedMediaType(HttpServletResponse response) throws IOException {
+        writeError(response, HttpStatus.UNSUPPORTED_MEDIA_TYPE, "UNSUPPORTED_MEDIA_TYPE",
+                "The request content type is not supported.");
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public void handleMaximumUploadSize(HttpServletResponse response) throws IOException {
+        writeError(response, HttpStatus.PAYLOAD_TOO_LARGE, "FILE_TOO_LARGE",
+                "The uploaded file exceeds the configured size limit.");
     }
 
     @ExceptionHandler(InvalidRequestException.class)

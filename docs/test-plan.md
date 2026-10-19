@@ -28,7 +28,7 @@ Test strategy and current evidence, updated by Agent 1 on 2026-10-19.
 
 Status files must report the actual command and result. Do not mark a feature DONE if its applicable checks were not run. Use synthetic test data only.
 
-## Phase 1 evidence
+## Phase 1–2 evidence
 
 - `mvn -q clean -Dtest=AuthIntegrationTest,InstitutionDirectoryIntegrationTest test`: passed (7 tests); the clean build applies shared V1 and Agent 2's V100 migration to isolated H2 databases. Directory tests cover tenant scoping, role enforcement, validation, duplicate conflicts, related-tenant checks and audit writes.
 - `mvn clean test`: 10 of 11 tests pass. The overall suite fails only in `TrainingSkillServiceTest.createTrimsInputAndUsesTheAuthenticatedInstitution` because the test-created Institution has a generated UUID different from the separately supplied institution UUID. The failing test belongs to Agent 2.
@@ -38,3 +38,13 @@ Status files must report the actual command and result. Do not mark a feature DO
 - `npm audit --audit-level=moderate`: passed with zero known npm vulnerabilities.
 - Maven dependency advisory scan: two critical Spring Web MVC findings remain at `6.2.19`; the scanner's patched version is Spring `7.0.9`, a major framework upgrade. Track this before production rather than silently upgrading the Boot 3 application.
 - PostgreSQL service startup was not tested because Docker is not installed in the environment.
+
+## Phase 3 document evidence
+
+- `mvn -q clean -Dtest=AuthIntegrationTest,InstitutionDirectoryIntegrationTest,DocumentManagementIntegrationTest test`: passed (10 tests).
+- `mvn clean test`: 13 of 14 tests pass; the only failure is the existing Agent 2-owned training service fixture assertion.
+- Document integration cases verify signature/content-type mismatch rejection, configured size limits, generated opaque storage metadata, immutable version increments, authenticated content download, faculty-owner filtering, cross-tenant denial, and no response disclosure of storage keys.
+- `npm test`: passed (6 tests), including multipart upload headers and authenticated document download filename handling.
+- `npm run typecheck`: passed.
+- `npm run build`: passed.
+- The local filesystem adapter's `dev`/`test` profile restriction is verified by configuration/code inspection; no production object-storage adapter exists.

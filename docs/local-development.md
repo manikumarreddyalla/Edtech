@@ -40,6 +40,8 @@ npm run dev
 
 The API listens on `http://localhost:8080`, the frontend on `http://localhost:5173`, and OpenAPI UI is at `http://localhost:8080/swagger-ui.html`. Flyway applies the schema during API startup. The `dev` profile provisions an institution with code `DEMO` and the configured bootstrap administrator on first start. The bootstrap password must be at least 12 characters.
 
+The dev profile stores private document bytes under `backend/.data/documents` by default; set `DOCUMENT_STORAGE_ROOT` to choose another local directory. Uploads are limited to 10 MiB and support PDF, JPEG, PNG and valid UTF-8 plain text. Downloads require authentication and tenant/owner authorization; files are not served as public URLs. The filesystem adapter is enabled only for `dev` and `test` profiles. Production requires a separately implemented private object-storage adapter and must not activate the development adapter.
+
 ## Checks
 
 ```powershell
