@@ -1,7 +1,9 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useAuth } from "./auth/AuthContext";
+import { AppLayout } from "./pages/AppLayout";
 import { DashboardPage } from "./pages/DashboardPage";
 import { LoginPage } from "./pages/LoginPage";
+import { TrainingSkillsPage } from "./training/TrainingSkillsPage";
 
 export function App() {
   const { user } = useAuth();
@@ -12,10 +14,10 @@ export function App() {
         path="/login"
         element={user ? <Navigate to="/" replace /> : <LoginPage />}
       />
-      <Route
-        path="/"
-        element={user ? <DashboardPage /> : <Navigate to="/login" replace />}
-      />
+      <Route element={user ? <AppLayout /> : <Navigate to="/login" replace />}>
+        <Route index element={<DashboardPage />} />
+        <Route path="training/skills" element={<TrainingSkillsPage />} />
+      </Route>
       <Route
         path="*"
         element={<Navigate to={user ? "/" : "/login"} replace />}

@@ -2,7 +2,7 @@
 
 ## Status
 
-Phase 0 plan, published by Agent 1 on 2026-10-19.
+Phase 0–1 plan, updated by Agent 1 on 2026-10-19.
 
 ## Ownership boundaries
 
@@ -22,7 +22,7 @@ Phase 0 plan, published by Agent 1 on 2026-10-19.
 2. Agent 2 reviews the contract in its own status file and records any dependency/blocker. Agent 1 does not claim Agent 2 has acknowledged until that update is present.
 3. Agent 1 implements the runnable API/UI shell and shared model/migration baseline. Publish exact build versions, API behavior and test evidence in Agent 1 status.
 4. Agent 2 implements training features against those concrete models and APIs, using a coordinated migration version.
-5. Integrate routes and menu entries in the Agent 1-owned shell only after Agent 2 provides route/component interfaces.
+5. Integrate routes and menu entries in the Agent 1-owned shell after Agent 2 provides route/component interfaces.
 6. Run backend/frontend builds and targeted integration/tenant-isolation tests after merging both modules.
 
 ## Shared API integration checklist
@@ -46,4 +46,4 @@ Phase 0 plan, published by Agent 1 on 2026-10-19.
 
 ## Current integration state
 
-Agent 2's status file records Phase 0 IN_PROGRESS and waiting for Agent 1 shared contracts. This publication satisfies the initial contract dependency; it does not indicate that Agent 2 has read or accepted it. The next coordination checkpoint is Agent 2's status update.
+Agent 2 accepted the shared identity, tenant, API and migration contracts in its status file. The initial skill catalog route is mounted at `/training/skills` in the Agent 1 shell and uses the shared API client and auth context. Agent 2 owns that page and its backend module. Full backend suite currently has one Agent 2-owned test failure in the training skill service fixture; see `docs/known-issues.md`. Broader institutional CRUD and evidence integration remain next.

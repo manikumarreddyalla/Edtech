@@ -22,6 +22,11 @@ Set the resulting value as `JWT_SECRET_BASE64` in `.env`. The API reads process 
 ```powershell
 docker compose up -d postgres
 cd backend
+Get-Content ..\.env | ForEach-Object {
+  if ($_ -match '^\s*([^#=]+)\s*=\s*(.*)\s*$') {
+    [Environment]::SetEnvironmentVariable($matches[1], $matches[2], 'Process')
+  }
+}
 mvn spring-boot:run
 ```
 
