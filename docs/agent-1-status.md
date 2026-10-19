@@ -1,9 +1,9 @@
 # Agent 1 Status — Platform and Institutional Intelligence Lead
 
 - Owner: agent-1
-- Task: Phase 1 shared platform foundation and first module integration
+- Task: Phase 2 institutional directory API slice
 - Status: IN_PROGRESS
-- Timestamp: 2026-10-19T11:48:00+05:30
+- Timestamp: 2026-10-19T12:06:00+05:30
 
 ## Files created or changed
 - `docs/architecture.md`
@@ -24,16 +24,21 @@
 - `.gitignore`
 - `docs/local-development.md`
 - `Readme.md`
+- `backend/src/main/java/com/collegeops/institution/`
+- `backend/src/main/java/com/collegeops/common/`
+- `backend/src/test/java/com/collegeops/institution/InstitutionDirectoryIntegrationTest.java`
 
 ## API or schema changes
 - Published shared Institution, User, Role, Department, AcademicProgram, Student, audit metadata, error, pagination, authentication and tenant-isolation contracts.
 - Added Flyway V1 shared tenant/identity schema, BCrypt-backed local admin bootstrap, 10-minute HS256 bearer authentication, `/api/v1/auth/login` and `/api/v1/auth/me`, standard API errors, CORS, actuator health and OpenAPI.
 - Added the React login/dashboard shell and mounted Agent 2's `/training/skills` page using the shared router/auth/API client.
-- No institutional CRUD, document upload/storage, accreditation workflows or reporting APIs are implemented yet.
+- Added tenant-scoped, paginated read and administrator-create routes for departments, academic programs and minimal student directory entries.
+- Directory creation writes an audit event in the same transaction; linked student users must be active, same-tenant users with the `STUDENT` role.
+- Updates/archiving, faculty profile management, document upload/storage, accreditation workflows and reporting APIs are not implemented yet.
 
 ## Tests executed
-- `mvn -q clean -Dtest=AuthIntegrationTest test`: passed (4 tests).
-- `mvn test`: auth tests passed (4); total suite failed on one Agent 2-owned `TrainingSkillServiceTest` fixture assertion.
+- `mvn -q clean -Dtest=AuthIntegrationTest,InstitutionDirectoryIntegrationTest test`: passed (7 tests).
+- `mvn clean test`: 10/11 tests pass; one Agent 2-owned `TrainingSkillServiceTest` fixture assertion fails.
 - `npm test`: passed (4 tests).
 - `npm run typecheck`: passed.
 - `npm run build`: passed.
@@ -58,4 +63,4 @@
 - Agent 2 owns the training module, V100+ migration range, training components and training tests. Do not edit those files.
 
 ## Exact next action
-- Implement Agent 1's institutional records and accreditation APIs/migrations using V2–V99, then add tenant-isolation tests and publish the next phase checkpoint.
+- Implement document storage/metadata and the first accreditation evidence workflow with tenant-isolation tests; use V2–V99 and publish the next phase checkpoint.

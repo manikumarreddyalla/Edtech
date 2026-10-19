@@ -49,3 +49,5 @@ Audit rows should be append-only for sensitive actions. Include no credentials, 
 3. `V100+`: Agent 2 training schema, as recorded in `docs/agent-2-status.md`.
 
 Never rewrite an applied migration or ship duplicate Flyway versions. Agent 2's current training skill migration is `V100__training_skill_catalog.sql`; verify only one copy of each migration remains under `target/classes` after a clean build.
+
+The initial directory API uses the `departments`, `academic_programs` and `students` tables already created in shared V1; no schema migration was needed for this read/create slice. `audit_events` is mapped by the shared append-only `AuditEvent` entity and records each successful directory create in the same transaction.

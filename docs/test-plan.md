@@ -30,8 +30,8 @@ Status files must report the actual command and result. Do not mark a feature DO
 
 ## Phase 1 evidence
 
-- `mvn -q clean -Dtest=AuthIntegrationTest test`: passed (4 tests); the clean build applies shared V1 and Agent 2's V100 migration to an isolated H2 database.
-- `mvn test`: AuthIntegrationTest passed (4 tests); the overall suite failed in `TrainingSkillServiceTest.createTrimsInputAndUsesTheAuthenticatedInstitution` because the test-created Institution has a generated UUID different from the separately supplied institution UUID. The failing test belongs to Agent 2.
+- `mvn -q clean -Dtest=AuthIntegrationTest,InstitutionDirectoryIntegrationTest test`: passed (7 tests); the clean build applies shared V1 and Agent 2's V100 migration to isolated H2 databases. Directory tests cover tenant scoping, role enforcement, validation, duplicate conflicts, related-tenant checks and audit writes.
+- `mvn clean test`: 10 of 11 tests pass. The overall suite fails only in `TrainingSkillServiceTest.createTrimsInputAndUsesTheAuthenticatedInstitution` because the test-created Institution has a generated UUID different from the separately supplied institution UUID. The failing test belongs to Agent 2.
 - `npm test`: passed (4 tests), including the login flow and authenticated route to the training skill page.
 - `npm run typecheck`: passed.
 - `npm run build`: passed.

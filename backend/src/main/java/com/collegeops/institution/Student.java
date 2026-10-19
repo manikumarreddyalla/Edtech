@@ -46,7 +46,42 @@ public class Student extends AuditedEntity {
     protected Student() {
     }
 
+    public Student(Institution institution, UUID userId, Department department,
+                   AcademicProgram academicProgram, String studentNumber) {
+        this.id = UUID.randomUUID();
+        this.institution = institution;
+        this.userId = userId;
+        this.department = department;
+        this.academicProgram = academicProgram;
+        this.studentNumber = studentNumber;
+        this.status = "ACTIVE";
+    }
+
     public UUID getId() {
         return id;
+    }
+
+    public Institution getInstitution() {
+        return institution;
+    }
+
+    public UUID getUserId() {
+        return userId;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public AcademicProgram getAcademicProgram() {
+        return academicProgram;
+    }
+
+    public String getStudentNumber() {
+        return studentNumber;
+    }
+
+    public String getStatus() {
+        return status;
     }
 }

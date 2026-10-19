@@ -37,11 +37,31 @@ public class Department extends AuditedEntity {
     protected Department() {
     }
 
+    public Department(Institution institution, String name, String code) {
+        this.id = UUID.randomUUID();
+        this.institution = institution;
+        this.name = name;
+        this.code = code;
+        this.status = "ACTIVE";
+    }
+
     public UUID getId() {
         return id;
     }
 
     public Institution getInstitution() {
         return institution;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getStatus() {
+        return status;
     }
 }

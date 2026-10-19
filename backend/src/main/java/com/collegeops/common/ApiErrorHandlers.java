@@ -64,6 +64,22 @@ public class ApiErrorHandlers implements AuthenticationEntryPoint, AccessDeniedH
         writeError(response, HttpStatus.BAD_REQUEST, "VALIDATION_ERROR", "The request body is malformed.");
     }
 
+    @ExceptionHandler(InvalidRequestException.class)
+    public void handleInvalidRequest(HttpServletResponse response, InvalidRequestException exception)
+            throws IOException {
+        writeError(response, HttpStatus.BAD_REQUEST, "VALIDATION_ERROR", exception.getMessage());
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public void handleNotFound(HttpServletResponse response) throws IOException {
+        writeError(response, HttpStatus.NOT_FOUND, "NOT_FOUND", "The requested resource was not found.");
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public void handleMethodAccessDenied(HttpServletResponse response) throws IOException {
+        writeError(response, HttpStatus.FORBIDDEN, "FORBIDDEN", "You are not permitted to perform this action.");
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public void handleConflict(HttpServletResponse response) throws IOException {
         writeError(response, HttpStatus.CONFLICT, "CONFLICT", "The request conflicts with existing data.");

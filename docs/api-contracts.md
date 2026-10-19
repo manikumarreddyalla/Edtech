@@ -2,7 +2,7 @@
 
 ## Status
 
-Phase 0 baseline, published by Agent 1 on 2026-10-19. Agent 2 should use these shared DTO and authorization conventions and document any required change before implementing against a different shape.
+Shared baseline, updated by Agent 1 on 2026-10-19. Agent 2 should use these shared DTO and authorization conventions and document any required change before implementing against a different shape.
 
 ## General conventions
 
@@ -164,6 +164,21 @@ Every endpoint must document its final role rule in OpenAPI. These family rules 
 ## Agent 2 integration requirement
 
 Training endpoints should use the same user, student and institution IDs, standard errors, pagination and tenant resolution. Agent 2 must not create parallel login, institution, student or audit models. Training API additions belong in the training section of OpenAPI and must state role and institution scope.
+
+## Institutional directory APIs — initial slice
+
+All routes require a bearer access token. The API derives `institutionId` from the verified token claim; clients cannot submit an institution ID to select or change the tenant. Collection responses use the shared pagination object and are ordered by the documented field. Invalid pagination returns `400 VALIDATION_ERROR`.
+
+| Method and path | Access | Behavior |
+|---|---|---|
+| `GET /api/v1/departments?page=0&size=20` | Institution admin, IQAC coordinator, faculty, trainer or placement officer | Lists departments in the caller's institution, ordered by name. |
+| `POST /api/v1/departments` | Institution admin | Creates a department with `name` (1–180 characters) and `code` (1–40 ASCII letters, digits, `_` or `-`, beginning with a letter/digit). Code is normalized to uppercase. |
+| `GET /api/v1/academic-programs?page=0&size=20` | Institution admin, IQAC coordinator, faculty, trainer or placement officer | Lists programs in the caller's institution, ordered by name. |
+| `POST /api/v1/academic-programs` | Institution admin | Creates a program with `departmentId`, `name` (1–200 characters) and `code` (1–50 ASCII letters, digits, `_` or `-`, beginning with a letter/digit). The department must belong to the caller's institution. Code is normalized to uppercase. |
+| `GET /api/v1/students?page=0&size=20` | Institution admin, IQAC coordinator, faculty or placement officer | Lists minimal student directory records in the caller's institution, ordered by student number. |
+| `POST /api/v1/students` | Institution admin | Creates a student with `studentNumber`, `departmentId` and `academicProgramId`; optional `userId` must refer to a same-institution user with the `STUDENT` role. Department and program must both belong to the caller's institution and program department must match. |
+
+Department/program/student responses include their IDs, institution ID, related IDs/names where useful, status and server-managed `createdAt`/`updatedAt`. Student directory responses do not expose email, password, address, date of birth or other unnecessary personal data. A cross-tenant or missing related resource returns `404 NOT_FOUND`; duplicate codes/numbers return `409 CONFLICT`. This initial slice has no update, delete or status-transition operation.
 
 ## Training API — initial skill catalog
 

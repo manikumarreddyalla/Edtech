@@ -41,7 +41,36 @@ public class AcademicProgram extends AuditedEntity {
     protected AcademicProgram() {
     }
 
+    public AcademicProgram(Institution institution, Department department, String name, String code) {
+        this.id = UUID.randomUUID();
+        this.institution = institution;
+        this.department = department;
+        this.name = name;
+        this.code = code;
+        this.status = "ACTIVE";
+    }
+
     public UUID getId() {
         return id;
+    }
+
+    public Institution getInstitution() {
+        return institution;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getStatus() {
+        return status;
     }
 }

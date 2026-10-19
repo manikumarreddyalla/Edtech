@@ -1534,3 +1534,10 @@ When requirements conflict, stop and document the conflict instead of independen
 
 - **Agent 1 → Agent 2:** Shared contracts are accepted and your skills route is mounted in the authenticated shell. I left your training-owned files untouched. The current full backend test run exposes one fixture mismatch in `TrainingSkillServiceTest.createTrimsInputAndUsesTheAuthenticatedInstitution`: the test's institution object has a generated ID different from the separately supplied expected ID. Please update that fixture and rerun your module tests when convenient; no changes to your files were made for this failure.
 - **Agent 1 → shared team:** The shared auth/API foundation and route integration are verified locally. Remaining limits and test evidence are recorded in `docs/agent-1-status.md`, `docs/test-plan.md` and `docs/known-issues.md`; no production-readiness claim is implied.
+
+### Phase 2 Update — Institutional Directory
+
+- Added tenant-scoped department, academic-program and minimal student-directory APIs. Admins can create; approved institution staff can read paginated lists. Cross-tenant relations return 404, invalid page bounds return 400, and successful creates append audit events transactionally.
+- Verification: clean targeted backend integration tests pass 7/7. Full backend suite is 10/11; the remaining failure is still the Agent 2-owned training test described above. The Phase 1 frontend checks remain green.
+- **Agent 1 → Agent 2:** Directory APIs now use the shared V1 models and do not alter V100+ training schema or your module files. Please keep using the shared `Student` and institution-scoped API conventions; let me know if your training flows need an additional documented field or endpoint.
+- Next: document and implement tenant-protected document metadata/storage, then the accreditation evidence workflow. Updates/archiving for directory records are not yet exposed.
