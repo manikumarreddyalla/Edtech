@@ -57,3 +57,16 @@ Status files must report the actual command and result. Do not mark a feature DO
 - `npm test`: passed (7 tests), including the accreditation route and active evidence-owner lookup.
 - `npm run typecheck` and `npm run build`: passed.
 - PostgreSQL runtime remains unverified because Docker is unavailable in this environment.
+
+## Phase 4 release gate — 2026-10-21
+
+- Re-ran `mvn clean test`: 16/17 passed; the single failure is the known Agent 2 fixture mismatch above.
+- Re-ran `npm test`, `npm run typecheck` and `npm run build`: all passed; the frontend suite reports 7/7 tests.
+- Clean Agent 1 integration selection passed 13/13, including Flyway migrations V1–V3 and authorization/tenant checks.
+- A standalone `mvn spring-boot:run -Dspring-boot.run.profiles=test` attempt could not start because the H2 driver is test-scope and is not on the application runtime classpath. Docker/PostgreSQL is unavailable here, so no live application/database smoke test could be completed.
+- The full Phase 4 gate is **BLOCKED**: PostgreSQL startup was not verified, the full backend suite is not green, and KI-002 still tracks two critical Spring Web MVC advisories requiring coordinated framework-level remediation. Do not treat H2 integration tests as PostgreSQL or production verification.
+
+## Phase 5 pilot readiness
+
+- **BLOCKED / not ready for pilot.** The current training module is only the initial skill catalog; the pathway/cohort/enrollment/assessment/results/skill-gap workflow and related dashboard/report outputs in the release scope are not present. Production object storage, malware scanning, account lifecycle, reporting exports and verified PostgreSQL deployment are also open.
+- Synthetic tests exist, but there is no complete, provisioned synthetic pilot dataset and no pilot onboarding guide. These should be prepared after the full pilot workflows and supported account-provisioning path are available; no real student data should be used.

@@ -2,7 +2,7 @@
 
 ## Status
 
-Phase 0–1 plan, updated by Agent 1 on 2026-10-19.
+Phase 0–4 integration state, updated by Agent 1 on 2026-10-21.
 
 ## Ownership boundaries
 
@@ -46,4 +46,4 @@ Phase 0–1 plan, updated by Agent 1 on 2026-10-19.
 
 ## Current integration state
 
-Agent 2 accepted the shared identity, tenant, API and migration contracts in its status file. The initial skill catalog route is mounted at `/training/skills` in the Agent 1 shell and uses the shared API client and auth context. Agent 1's initial department/program/student directory routes are implemented with tenant scoping, role guards, bounded pagination and transactional audit events. Document V2 metadata/version APIs, private dev/test filesystem storage and a role-aware React document library are integrated. Production storage remains a blocker. Agent 2 owns the training page and backend module. Full backend suite currently has one Agent 2-owned test failure in the training skill service fixture; see `docs/known-issues.md`. Accreditation criteria and evidence review remain next.
+Agent 2 accepted the shared identity, tenant, API and migration contracts in its status file. The initial skill catalog route is mounted at `/training/skills` in the Agent 1 shell and uses the shared API client and auth context. Agent 1's department/program/student directory routes, document V2 APIs and configurable accreditation V3 workflow are implemented with tenant scoping, role guards, bounded pagination and audit events. Clean Agent 1 backend integration tests pass 13/13; frontend tests, typecheck and production build pass. Full backend suite is 16/17 with one Agent 2-owned training fixture mismatch. Phase 4 verification remains blocked by that full-suite failure, unresolved critical Spring advisories and lack of a PostgreSQL runtime in this environment. Phase 5 pilot readiness remains blocked by incomplete training pathways/cohorts/assessments/skill-gap reporting, production storage/scanning and missing pilot provisioning/onboarding. See `docs/test-plan.md`, `docs/known-issues.md`, and both agent status files; Agent 1 has not modified Agent 2-owned training code.

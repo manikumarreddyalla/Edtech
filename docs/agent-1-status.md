@@ -2,8 +2,8 @@
 
 - Owner: agent-1
 - Task: Phase 4 configurable accreditation evidence workflow
-- Status: IN_PROGRESS — Phases 0–4 delivered; additional platform capabilities remain
-- Timestamp: 2026-10-19
+- Status: BLOCKED — Phase 4 release verification incomplete; Phase 5 is not pilot-ready
+- Timestamp: 2026-10-21
 
 ## Files created or changed
 - `docs/architecture.md`
@@ -59,12 +59,14 @@
 ## Tests executed
 - `mvn -q clean -Dtest=AuthIntegrationTest,InstitutionDirectoryIntegrationTest,DocumentManagementIntegrationTest test`: passed (10 tests).
 - `mvn clean -Dtest=AuthIntegrationTest,InstitutionDirectoryIntegrationTest,DocumentManagementIntegrationTest,AccreditationIntegrationTest test`: passed (13 tests); clean runs applied V1–V3 and exercised the evidence lifecycle against PostgreSQL-mode H2.
-- `mvn clean test`: 16/17 tests pass; one Agent 2-owned `TrainingSkillServiceTest` fixture assertion fails at line 63.
+- `mvn clean test` (2026-10-21): 16/17 tests pass; one Agent 2-owned `TrainingSkillServiceTest` fixture assertion fails at line 63.
 - `npm test`: passed (7 tests).
 - `npm run typecheck`: passed.
 - `npm run build`: passed.
 - `npm audit --audit-level=moderate`: passed, 0 vulnerabilities.
-- Maven advisory scan: 2 critical Spring Web MVC findings remain; patched line reported is Spring 7.0.9, a major upgrade. PostgreSQL/Docker runtime was not available to test.
+- Maven advisory scan: 2 critical Spring Web MVC findings remain; patched line reported is Spring 7.0.9, a major upgrade. Docker is unavailable, so PostgreSQL runtime and a clean PostgreSQL install were not verified.
+- Release gate: BLOCKED by the non-green full backend suite, unavailable PostgreSQL runtime, and unresolved critical Spring advisories (KI-002).
+- Pilot readiness: BLOCKED; full training pathways/cohorts/assessments/skill-gap reporting, production file security/storage, analytics/export workflows, synthetic pilot provisioning and onboarding guide remain incomplete.
 
 ## Decisions made
 - Modular monolith; Spring Boot API, React/TypeScript frontend and PostgreSQL.
@@ -85,4 +87,4 @@
 - Agent 2 owns the training module, V100+ migration range, training components and training tests. Do not edit those files.
 
 ## Exact next action
-- Implement and validate the next shared platform slice (directory lifecycle, production object storage, or institution intelligence dashboards) after coordinating scope with Agent 2; production storage and report exports are not implied by this accreditation workflow.
+- Coordinate with Agent 2 to finish the training pathway and skill-gap workflows; separately resolve the critical framework advisories and provision PostgreSQL before claiming the end-to-end or pilot-readiness gates pass.
