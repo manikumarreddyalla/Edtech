@@ -68,5 +68,15 @@ Status files must report the actual command and result. Do not mark a feature DO
 
 ## Phase 5 pilot readiness
 
-- **BLOCKED / not ready for pilot.** The current training module is only the initial skill catalog; the pathway/cohort/enrollment/assessment/results/skill-gap workflow and related dashboard/report outputs in the release scope are not present. Production object storage, malware scanning, account lifecycle, reporting exports and verified PostgreSQL deployment are also open.
-- Synthetic tests exist, but there is no complete, provisioned synthetic pilot dataset and no pilot onboarding guide. These should be prepared after the full pilot workflows and supported account-provisioning path are available; no real student data should be used.
+- **BLOCKED / not ready for pilot.** Reporting dashboard, evidence CSV/PDF exports, training cohort export, training workflow APIs, and a synthetic pilot preparation guide have been added. Skill-gap analytics remain unavailable because the model lacks baseline/final skill assessments mapped to role targets. Production object storage, malware scanning, account lifecycle, full PostgreSQL verification, and a complete browser pilot journey remain open.
+- Synthetic integration fixtures are used; they are not a complete pilot dataset or production provisioning flow. Do not use real student data or claim placement/compliance outcomes.
+
+## Latest verification — 2026-10-21
+
+- `mvn clean test` from `backend`: **passed, 26 tests**, 0 failures, 0 errors, 0 skipped. This includes accreditation, documents, reporting, auth, institution directory, training skills and training workflows. Flyway runs against isolated H2 databases in PostgreSQL mode; this is not PostgreSQL verification.
+- From `frontend`: `npm test` **passed, 7/7**; `npm run typecheck` **passed**; `npm run build` **passed**; `npm audit --audit-level=moderate` **passed, 0 vulnerabilities**.
+- `ReportingIntegrationTest`: 5/5 passed in the full backend suite, covering dashboard tenant scope and role authorization, CSV formula protection, PDF generation and cross-tenant cohort export denial.
+- After the clean test run, the API started with the test profile and returned actuator health `UP`; the unauthenticated dashboard request returned `401` as expected. The frontend development server returned HTTP `200`. No authenticated browser journey was run.
+- Docker and local PostgreSQL are unavailable. PostgreSQL clean migration/startup remains unverified.
+- **Phase 4: BLOCKED.** The complete automated suites pass, but PostgreSQL verification and unresolved critical Spring Web MVC advisories (KI-002) prevent sign-off.
+- **Phase 5: BLOCKED.** Production storage/security controls, production account lifecycle, skill-gap analytics, complete pilot provisioning, and end-to-end browser validation remain incomplete.

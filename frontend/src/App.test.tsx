@@ -5,6 +5,26 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { AuthProvider } from "./auth/AuthContext";
 import { App } from "./App";
 
+const dashboardResponse = {
+  academicYear: "2026",
+  evidenceStatusCounts: {
+    NOT_STARTED: 2,
+    IN_PROGRESS: 1,
+    SUBMITTED: 3,
+    NEEDS_REVISION: 0,
+    VERIFIED: 4,
+  },
+  pendingReview: 3,
+  overdue: 1,
+  missingEvidence: 3,
+  activeCohorts: 2,
+  enrolledStudents: 20,
+  completedStudents: 7,
+  skillGapMetricsAvailable: false,
+  skillGapMetricsUnavailableReason:
+    "Student skill levels are not recorded against job-role targets yet.",
+};
+
 function renderApp(initialEntry = "/login") {
   return render(
     <MemoryRouter initialEntries={[initialEntry]}>
@@ -25,21 +45,27 @@ describe("application authentication shell", () => {
     const user = userEvent.setup();
     vi.stubGlobal(
       "fetch",
-      vi.fn().mockResolvedValue(
-        new Response(
-          JSON.stringify({
-            accessToken: "test-token",
-            tokenType: "Bearer",
-            expiresAt: "2026-10-19T11:30:00Z",
-            user: {
-              id: "user-id",
-              institutionId: "institution-id",
-              email: "admin@example.edu",
-              displayName: "Alex Admin",
-              roles: ["INSTITUTION_ADMIN"],
-            },
-          }),
-          { status: 200, headers: { "Content-Type": "application/json" } },
+      vi.fn().mockImplementation((input: RequestInfo | URL) =>
+        Promise.resolve(
+          new Response(
+            JSON.stringify(
+              String(input).endsWith("/api/v1/auth/login")
+                ? {
+                    accessToken: "test-token",
+                    tokenType: "Bearer",
+                    expiresAt: "2026-10-19T11:30:00Z",
+                    user: {
+                      id: "user-id",
+                      institutionId: "institution-id",
+                      email: "admin@example.edu",
+                      displayName: "Alex Admin",
+                      roles: ["INSTITUTION_ADMIN"],
+                    },
+                  }
+                : dashboardResponse,
+            ),
+            { status: 200, headers: { "Content-Type": "application/json" } },
+          ),
         ),
       ),
     );
@@ -51,7 +77,9 @@ describe("application authentication shell", () => {
     await user.type(screen.getByLabelText(/^password$/i), "correct-horse-battery");
     await user.click(screen.getByRole("button", { name: "Sign in" }));
 
-    expect(await screen.findByRole("heading", { name: /welcome to collegeops/i })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: /evidence and training snapshot/i })).toBeInTheDocument();
+    expect(await screen.findByText("Pending review")).toBeInTheDocument();
+    expect(await screen.findByText(/Skill-gap analysis is not available/)).toBeInTheDocument();
     expect(screen.getByText("admin@example.edu")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /skill catalog/i })).toBeInTheDocument();
   });
@@ -147,6 +175,7 @@ describe("application authentication shell", () => {
       const url = String(input);
       const isLogin = url.endsWith("/api/v1/auth/login");
       const isOwners = url.endsWith("/api/v1/accreditation/evidence/owners");
+      const isDashboard = url.includes("/api/v1/reports/dashboard");
       return Promise.resolve(
         new Response(
           JSON.stringify(
@@ -163,7 +192,9 @@ describe("application authentication shell", () => {
                     roles: ["INSTITUTION_ADMIN"],
                   },
                 }
-              : isOwners
+              : isDashboard
+                ? dashboardResponse
+                : isOwners
                 ? []
                 : { content: [], page: 0, size: 100, totalElements: 0, totalPages: 0 },
           ),
@@ -193,6 +224,14 @@ describe("application authentication shell", () => {
     const fetchMock = vi.fn().mockImplementation(
       (input: RequestInfo | URL, init?: RequestInit) => {
         const url = String(input);
+        if (url.includes("/api/v1/reports/dashboard")) {
+          return Promise.resolve(
+            new Response(JSON.stringify(dashboardResponse), {
+              status: 200,
+              headers: { "Content-Type": "application/json" },
+            }),
+          );
+        }
         if (url.endsWith("/api/v1/auth/login")) {
           return Promise.resolve(
             new Response(

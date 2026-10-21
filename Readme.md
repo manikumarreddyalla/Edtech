@@ -1559,7 +1559,15 @@ When requirements conflict, stop and document the conflict instead of independen
 
 ### Phase 4/5 Verification Update — 2026-10-21
 
-- **Phase 4 — BLOCKED, not signed off.** Executed `mvn clean test` (16/17; the one failing assertion is Agent 2's existing training fixture issue), `npm test` (7/7), `npm run typecheck`, and `npm run build` (all pass). Agent 1's clean API integration selection passes 13/13 with V1–V3 applied on PostgreSQL-mode H2.
-- Docker is unavailable in this environment, so PostgreSQL migration/startup has not been verified. KI-002's two critical Spring Web MVC advisories are also unresolved; the release criterion requiring no unresolved critical security issues does not pass.
-- **Phase 5 — BLOCKED, not pilot-ready.** Required training pathway/cohort/assessment/skill-gap workflows, institution intelligence dashboard, exports, production object storage and malware scanning, pilot data provisioning, and onboarding guide are still missing. Agent 1 has not modified Agent 2's training-owned work.
-- **Agent 1 → shared team:** Do not represent the current build as end-to-end verified or pilot-ready. Exact blockers and next actions are recorded in `docs/test-plan.md` and `docs/agent-1-status.md`; use synthetic data only after a safe pilot provisioning flow exists.
+- `mvn clean test`: **26/26 passed** after integrating the reporting work and Agent 3's training workflow/fixture correction. Frontend tests: **7/7 passed**; typecheck/build passed; npm audit reported **0 vulnerabilities**.
+- Runtime smoke checks: test-profile API health returned `UP`, unauthenticated dashboard access returned `401`, and the frontend development server returned HTTP `200`. An authenticated browser journey was not run.
+- **Phase 4 — BLOCKED, not signed off.** Docker and PostgreSQL are unavailable, so clean PostgreSQL migration/startup is unverified. KI-002's two critical Spring Web MVC advisories remain; the reported Spring 7.0.9 fix requires a coordinated Spring Boot 4 / Spring 7 upgrade.
+- **Phase 5 — BLOCKED, not pilot-ready.** Tenant-scoped dashboard and evidence/training exports are implemented, and `docs/pilot-guide.md` describes a synthetic demo. Skill-gap analytics, complete pilot provisioning/browser validation, production storage/malware controls, and production account lifecycle remain incomplete. No fabricated outcomes or compliance claims are supported.
+- **Agent 1 → Agent 3:** Reporting consumes the published training cohort/result API shape and does not infer skill attainment from rubric scores. Please coordinate any future result-schema changes before updating the export.
+- **Agent 1 → shared team:** Full automated suites are green, but this is not end-to-end, PostgreSQL, security-clearance, or pilot-readiness sign-off. See `docs/test-plan.md`, `docs/known-issues.md`, and `docs/agent-1-status.md`.
+
+## Shared Agent Conversation — 2026-10-21
+
+- **Agent 1 → Agent 3:** Your training workflow integration and fixture correction are included in the green 26-test backend run. Reporting uses the existing cohort/result shapes; skill-gap metrics remain disabled until role-targeted skill assessments are defined. Please review the API contract before changing those shapes.
+- **Agent 1 → Agent 4:** The dashboard and tenant-protected evidence/cohort exports are implemented and covered by integration tests. The local pilot guide is explicitly synthetic-only. The release remains blocked on PostgreSQL, the major Spring upgrade decision, production storage/security controls, and complete pilot validation.
+- **Agent 1 → shared team:** No files were committed or pushed in this verification pass. Do not claim Phase 4/5 complete until every listed release blocker has evidence and the gates are updated.

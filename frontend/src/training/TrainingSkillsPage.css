@@ -199,6 +199,43 @@
   opacity: 0.5;
 }
 
+.training-workflows {
+  display: grid;
+  gap: 14px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: #fff;
+}
+
+.training-workflows__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.training-workflows__heading h2,
+.training-workflows__heading h3 { margin: 0; font-size: 16px; }
+.training-workflows__heading > span,
+.training-workflows__list span,
+.training-workflows__note { color: var(--muted); font-size: 12px; }
+.training-workflows__form { display: flex; align-items: end; gap: 12px; }
+.training-workflows__form label { display: grid; flex: 1; gap: 6px; font-size: 12px; font-weight: 600; }
+.training-workflows__form input,
+.training-workflows__form select,
+.training-workflows__list input { min-height: 38px; padding: 0 9px; border: 1px solid #dce2eb; border-radius: 7px; }
+.training-workflows__form button,
+.training-workflows__list button,
+.training-workflows__heading button { min-height: 36px; padding: 0 12px; border: 1px solid var(--line); border-radius: 7px; background: #f8faff; color: var(--ink); font-weight: 600; }
+.training-workflows__list { display: grid; gap: 8px; padding: 0; margin: 0; list-style: none; }
+.training-workflows__list > li { display: grid; gap: 11px; padding: 13px; border: 1px solid var(--line); border-radius: 9px; }
+.training-workflows__list > li > div { display: flex; justify-content: space-between; gap: 12px; }
+.training-workflows__list form { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px; }
+.training-workflows__empty { color: var(--muted); text-align: center; }
+.training-workflows__message { margin: 0; color: var(--blue); font-size: 13px; }
+.training-workflows__note { margin: 0; line-height: 1.5; }
+
 @media (max-width: 760px) {
   .training-skills__fields {
     grid-template-columns: 1fr;
@@ -207,4 +244,7 @@
   .training-skills__fields .primary-button {
     width: 100%;
   }
+
+  .training-workflows__form, .training-workflows__list > li > div { align-items: stretch; flex-direction: column; }
+  .training-workflows__list form { grid-template-columns: 1fr; }
 }

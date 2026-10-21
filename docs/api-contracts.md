@@ -228,3 +228,53 @@ All routes require a bearer access token. The server derives `institutionId` fro
 | `POST /api/v1/training/skills` | `TRAINER` or `PLACEMENT_OFFICER` | Creates a skill in the caller's institution. `name` is required (1–120 characters); `description` is optional (up to 1000 characters). |
 
 The collection response uses the shared pagination shape. Skill responses include `id`, `institutionId`, `name`, `description`, `createdAt` and `updatedAt`. Duplicate names within one institution return `409 CONFLICT`; the same skill name may be used by another institution. No update or deletion operation is exposed in this initial slice.
+
+## Training workflows — initial lifecycle slice
+
+All routes below require a bearer token. Institution scope comes from the verified `institution_id` claim. Cross-institution IDs are returned as `404 NOT_FOUND`. Validated input errors return `400`; invalid lifecycle transitions return `409 INVALID_TRANSITION`; every successful create, publish, enrollment, submit, grade, feedback, activation or seed write is audited.
+
+| Method and path | Access | Behavior |
+|---|---|---|
+| `GET/POST /api/v1/training/job-roles` | Authenticated member / `TRAINER`, `PLACEMENT_OFFICER` | List tenant roles / create an internally defined role. |
+| `GET/POST /api/v1/training/job-roles/{roleId}/skills` | Authenticated member / `TRAINER`, `PLACEMENT_OFFICER` | List or set same-tenant skill target levels (1–5). |
+| `GET/POST /api/v1/training/pathways` | Authenticated member / `TRAINER`, `PLACEMENT_OFFICER` | List pathway versions / create next draft version for a name. |
+| `GET/POST /api/v1/training/pathways/{pathwayId}/modules` | Authenticated member / `TRAINER`, `PLACEMENT_OFFICER` | List ordered modules / append a module to a draft (`sequence=0` selects the next sequence). |
+| `POST /api/v1/training/pathways/{pathwayId}/publish` | `TRAINER`, `PLACEMENT_OFFICER` | Publish a draft only after it has at least one module. Published versions are immutable. |
+| `GET/POST /api/v1/training/cohorts` | Authenticated member / `TRAINER`, `PLACEMENT_OFFICER` | List tenant cohorts (students see their own) / create a planned cohort with a same-tenant trainer and published pathway. |
+| `POST /api/v1/training/cohorts/{cohortId}/activate` | `TRAINER`, `PLACEMENT_OFFICER` | Move `PLANNED` to `ACTIVE`. |
+| `POST /api/v1/training/cohorts/{cohortId}/enrollments` | `PLACEMENT_OFFICER` | Enroll an active same-tenant student profile. Duplicate enrollment is rejected by a unique constraint. |
+| `GET/POST /api/v1/training/cohorts/{cohortId}/assignments` | Authenticated member / `TRAINER` | List eligible cohort assignments / create an assignment or project with rubric items for an active cohort. |
+| `POST /api/v1/training/assignments/{assignmentId}/attempts` | `STUDENT` | Submit an attempt only for the student's enrolled cohort; late submissions are rejected. |
+| `GET /api/v1/training/assignments/{assignmentId}/rubric` | `TRAINER` | Lists the assignment's ordered rubric items for grading. |
+| `POST /api/v1/training/attempts/{attemptId}/grade` | `TRAINER` | Grade a submitted attempt once, with one bounded score per rubric item; persists total and feedback. |
+| `GET /api/v1/training/results` | Authenticated member | Trainers and placement officers see tenant results; students see only their own attempts/results. |
+| `GET/POST /api/v1/training/cohorts/{cohortId}/feedback` | Authenticated member / `TRAINER` | List permitted cohort feedback / add feedback only for an enrolled student. |
+
+Transitions are `DRAFT → PUBLISHED` for pathways, `PLANNED → ACTIVE` for cohorts, and `SUBMITTED → GRADED` for assessment attempts. No endpoint permits editing a published pathway or regrading an attempt. The dev-only `Synthetic Java and Spring Boot Foundations` pathway is explicitly marked synthetic and internally defined; it makes no employer or placement claims. Aggregate skill-gap analytics are not included in this slice.
+
+## Institutional dashboard and exports
+
+Reporting data is derived from the authenticated `institution_id`; clients cannot select
+another institution. Evidence dashboard and evidence exports require `INSTITUTION_ADMIN`
+or `IQAC_COORDINATOR`. The training cohort export requires `INSTITUTION_ADMIN` or
+`PLACEMENT_OFFICER`.
+
+| Method | Path | Access | Contract |
+|---|---|---|---|
+| `GET` | `/api/v1/reports/dashboard?academicYear=YYYY-YY` | Institution admin, IQAC coordinator, placement officer | Returns evidence counts and training participation metrics for the authenticated institution. `academicYear` is required. |
+| `GET` | `/api/v1/reports/evidence.csv?academicYear=YYYY-YY` | Institution admin, IQAC coordinator | Downloads institution/year-scoped evidence assignment rows as formula-safe CSV. Maximum 10,000 rows. |
+| `GET` | `/api/v1/reports/evidence.pdf?academicYear=YYYY-YY` | Institution admin, IQAC coordinator | Downloads a PDF status summary and criterion-code listing for the institution/year. |
+| `GET` | `/api/v1/reports/training/cohorts/{cohortId}.csv` | Institution admin, placement officer | Downloads institution-scoped student attempt/result rows for the cohort. A cohort outside the institution returns `404`. Maximum 10,000 rows. |
+
+### Dashboard metric definitions
+
+- `evidenceStatusCounts`: count of evidence assignments by status for the requested academic year.
+- `pendingReview`: assignments with status `SUBMITTED`.
+- `overdue`: assignments with a due date before the current database date and status other than `VERIFIED`.
+- `missingEvidence`: assigned criteria whose assignment is `NOT_STARTED`, `IN_PROGRESS`, or `NEEDS_REVISION`. This does not count criteria without an assignment.
+- `activeCohorts`: training cohorts with status `ACTIVE`.
+- `enrolledStudents`: distinct students with an `ENROLLED` enrollment in an active cohort.
+- `completedStudents`: distinct students with at least one `COMPLETED` enrollment.
+- `skillGapMetricsAvailable` is currently `false`. The training module does not yet store a student's assessed skill level against a job-role target, so the dashboard does not infer or fabricate skill-gap values.
+
+Report exports write an audit event. CSV fields are quoted and values beginning with spreadsheet formula prefixes (including prefixes after whitespace) are apostrophe-prefixed. Report row limits prevent unbounded in-memory exports.

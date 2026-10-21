@@ -3,7 +3,7 @@
 - Owner: agent-1
 - Task: Phase 4 configurable accreditation evidence workflow
 - Status: BLOCKED — Phase 4 release verification incomplete; Phase 5 is not pilot-ready
-- Timestamp: 2026-10-21
+- Timestamp: 2026-10-21 (latest verification)
 
 ## Files created or changed
 - `docs/architecture.md`
@@ -68,6 +68,14 @@
 - Release gate: BLOCKED by the non-green full backend suite, unavailable PostgreSQL runtime, and unresolved critical Spring advisories (KI-002).
 - Pilot readiness: BLOCKED; full training pathways/cohorts/assessments/skill-gap reporting, production file security/storage, analytics/export workflows, synthetic pilot provisioning and onboarding guide remain incomplete.
 
+## Latest integrated delivery — 2026-10-21
+
+- Added tenant-scoped institutional reporting: evidence status, pending review, overdue/missing evidence and active training participation metrics; evidence CSV/PDF reports; and authorized training-cohort CSV export. Metric definitions and current limitations are in `docs/api-contracts.md`.
+- Added a role-aware dashboard page and synthetic pilot preparation guide. Skill-gap values are explicitly unavailable until baseline/final skills can be mapped to role requirements.
+- Integrated Agent 3's training workflow API/migration and fixture correction without taking ownership of those training files. V101 is reserved for training workflows; verify migration coordination with Agent 3 before any further shared migration edits.
+- Verification supersedes the historical results above: `mvn clean test` passed 26/26; frontend tests passed 7/7; typecheck/build passed; npm audit reported 0 vulnerabilities. See `docs/test-plan.md` for commands and caveats.
+- Current release gates remain **BLOCKED**: Docker/PostgreSQL verification is unavailable; two critical Spring Web MVC advisories remain and require a coordinated Spring Boot 4 / Spring 7 major upgrade; production storage, malware controls, and account lifecycle are incomplete; an authenticated browser pilot journey has not been validated. Post-test smoke checks returned API health `UP`, unauthenticated dashboard `401`, and frontend HTTP `200`.
+
 ## Decisions made
 - Modular monolith; Spring Boot API, React/TypeScript frontend and PostgreSQL.
 - UUID identifiers, `/api/v1`, DTO-only API boundary, bounded pagination and a consistent error response.
@@ -77,7 +85,7 @@
 - Keep bearer tokens in frontend memory; reload signs the user out rather than persisting tokens in browser storage.
 
 ## Outstanding issues
-- Agent 2's training service unit test has a fixture mismatch and currently fails the full Maven suite; Agent 2 owns that test.
+- Skill-gap analytics are not implementable from rubric scores alone; the training domain needs approved skill-level assessment and role-target mapping.
 - Two Spring Web MVC critical advisories require a major Spring 7 / Boot 4 upgrade, tracked as a follow-up.
 - Production token lifecycle and private object storage/retention remain open; the production profile has no storage adapter until one is selected and implemented. See `docs/known-issues.md`.
 - Production document malware scanning/content disarm is not configured; see `KI-007`.

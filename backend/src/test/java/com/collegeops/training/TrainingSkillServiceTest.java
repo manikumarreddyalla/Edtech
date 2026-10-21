@@ -48,8 +48,8 @@ class TrainingSkillServiceTest {
 
     @Test
     void createTrimsInputAndUsesTheAuthenticatedInstitution() {
-        UUID institutionId = UUID.randomUUID();
         Institution institution = new Institution("Test College", "TEST");
+        UUID institutionId = institution.getId();
         when(skills.existsByInstitution_IdAndNormalizedName(institutionId, "java"))
                 .thenReturn(false);
         when(institutions.findById(institutionId)).thenReturn(Optional.of(institution));
